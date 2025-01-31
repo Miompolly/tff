@@ -1,3 +1,11 @@
+<?php 
+session_start(); 
+
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
+    header("Location: index.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -5,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Bootstrap 5.3 Dashboard">
     <meta name="author" content="Your Name">
-    <title>Dashboard Template · Bootstrap v5.3</title>
+    <title>Dashboard  TFF</title>
 
     <!-- Bootstrap CSS (CDN) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -203,7 +211,7 @@
 </svg>
 
 <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Company name</a>
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">TFF</a>
 
   <ul class="navbar-nav flex-row d-md-none">
     <li class="nav-item text-nowrap">
@@ -283,7 +291,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" href="logout.php">
                 <svg class="bi"><use xlink:href="#door-closed"/></svg>
                 Sign out
               </a>
@@ -301,9 +309,11 @@
         
         <!-- Display User & Date -->
         <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1">
-            <svg class="bi"><use xlink:href="#calendar3"/></svg>
-            <span id="user-info">User</span> | <span id="current-date">Loading...</span>
-        </button>
+    <svg class="bi"><use xlink:href="#calendar3"/></svg>
+    <span id="user-info"><?php echo $_SESSION['FullName'];?></span> | 
+    <span id="current-date">Loading...</span>
+</button>
+
         
         </div>
       </div>
@@ -314,20 +324,26 @@
     </main>
   </div>
 </div>
-<script>
-  // Simulating a logged-in user (Replace with actual user data)
-  const username = "John Doe"; // Fetch this dynamically from your backend
-  
-  // Get today's date
-  const today = new Date();
-  const formattedDate = today.toLocaleDateString('en-US', {
-      weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
-  });
 
-  // Inject User & Date into button
-  document.getElementById("user-info").textContent = username;
-  document.getElementById("current-date").textContent = formattedDate;
+<script>
+    // Function to format the date
+    function formatDate(date) {
+        var day = date.getDate();
+        var month = date.getMonth() + 1; // Months are zero-indexed
+        var year = date.getFullYear();
+        
+        // Add leading zero to single-digit day and month
+        return `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}/${year}`;
+    }
+
+    // Get the current date and update the span
+    document.addEventListener("DOMContentLoaded", function() {
+        var currentDate = new Date();
+        var formattedDate = formatDate(currentDate);
+        document.getElementById("current-date").textContent = formattedDate;
+    });
 </script>
+
 <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>

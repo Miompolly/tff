@@ -1,3 +1,12 @@
+<?php 
+session_start(); 
+
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    header("Location: dashboard.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,39 +37,99 @@
 <body>
     <!-- Topbar Start -->
     <div class="container-fluid bg-primary py-3">
-        
     </div>
     <!-- Topbar End -->
 
-
     <!-- Navbar Start -->
     <section id="home">
-        <div class="container-fluid position-relative nav-bar p-0">
-            <div class="container-lg position-relative p-0 px-lg-3" style="z-index: 9;">
-                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 pl-3 pl-lg-5">
-                    <a href="" class="navbar-brand">
-                        <img src="img/Logo Png.png" alt="Logo" class="img-fluid" style="height: 60px; width: auto;">
-                    </a>
-                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                        <div class="navbar-nav ml-auto py-0">
-                            <a href="#home" class="nav-item nav-link active">Home</a>
-                            <a href="#prayer-time" class="nav-item nav-link">Prayer Time</a>
-                            <a href="#donate" class="nav-item nav-link">Donate</a>
-                            <a href="#service" class="nav-item nav-link">Services</a>
-                            <a href="#about-us" class="nav-item nav-link">About Us</a>
-                            <a href="#contact-us" class="nav-item nav-link">Contact Us</a>
-                            <a href="#announcement" class="nav-item nav-link">Announcement</a>
-                            <button class="nav-item nav-link btn btn-primary" data-toggle="modal" data-target="#loginModal">Login</button>
-                            <button class="nav-item nav-link btn " data-toggle="modal" data-target="#signupModal">Signup</button>
-                        </div>
+    <div class="container-fluid position-relative nav-bar p-0">
+        <div class="container-lg position-relative p-0 px-lg-3" style="z-index: 9;">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 pl-3 pl-lg-5">
+                <a href="index.php" class="navbar-brand">
+                    <img src="img/Logo Png.png" alt="Logo" class="img-fluid" style="height: 60px; width: auto;">
+                </a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
+                    <div class="navbar-nav ml-auto py-0">
+                        <a href="#home" class="nav-item nav-link active">Home</a>
+                        <a href="#prayer-time" class="nav-item nav-link">Prayer Time</a>
+                        <a href="#donate" class="nav-item nav-link">Donate</a>
+                        <a href="#service" class="nav-item nav-link">Services</a>
+                        <a href="#about-us" class="nav-item nav-link">About Us</a>
+                        <a href="#contact-us" class="nav-item nav-link">Contact Us</a>
+                        <a href="#announcement" class="nav-item nav-link">Announcement</a>
+
+                        <?php if (isset($_SESSION['email'])) : ?>
+                    
+                            <a href="logout.php" class="nav-item nav-link btn btn-danger text-white ml-2">Logout</a>
+                        <?php else : ?>
+                            <!-- Show Login and Signup Buttons if Not Logged In -->
+                            <button class="btn btn-primary ml-2" data-toggle="modal" data-target="#loginModal">Login</button>
+                            <button class="btn btn-secondary ml-2" data-toggle="modal" data-target="#signupModal">Signup</button>
+                        <?php endif; ?>
                     </div>
-                </nav>
+                </div>
+            </nav>
+        </div>
+    </div>
+    </section>
+    <!-- Navbar End -->
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="login_action.php" method="POST">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signupModalLabel">Signup</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="signup_action.php" method="POST">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Signup</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Navbar End -->
 
 
