@@ -1,11 +1,62 @@
-<?php 
-session_start(); 
+<?php
+session_start();
 
-if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
-    header("Location: index.php");
+// Include your database connection
+$conn = new mysqli('localhost', 'root', '', 'tff');
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if user ID is provided in the URL
+if (isset($_GET['id'])) {
+    $userId = $_GET['id'];
+
+    // Fetch user data for the given user ID
+    $sql = "SELECT * FROM users WHERE user_id = $userId";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows == 1) {
+        $row = $result->fetch_assoc();
+        $fullName = $row['FullName'];
+        $email = $row['email'];
+        $role = $row['role'];
+    } else {
+        // If no user found, redirect to the user management page
+        header("Location: users.php");
+        exit();
+    }
+} else {
+    // If no user ID is provided, redirect to the user management page
+    header("Location: users.php");
     exit();
 }
+
+// Check if form is submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $fullName = $_POST['fullName'];
+    $email = $_POST['email'];
+    $role = $_POST['role'];
+
+    // Update user data in the database
+    $updateSql = "UPDATE users SET FullName = '$fullName', email = '$email', role = '$role' WHERE user_id = $userId";
+    if ($conn->query($updateSql) === TRUE) {
+        // Set a success message and redirect to the user management page
+        $_SESSION['message'] = 'User updated successfully!';
+        $_SESSION['msg_type'] = 'success';
+        header("Location: users.php");
+        exit();
+    } else {
+        // Set an error message
+        $_SESSION['message'] = 'Error updating user: ' . $conn->error;
+        $_SESSION['msg_type'] = 'danger';
+    }
+}
+
+$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -298,7 +349,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
+        <h1 class="h2">Edit User Info</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
         
         
@@ -312,34 +363,75 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
         
         </div>
       </div>
+      <div class="container mt-4">
 
-      <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+<div class="container mt-4 ">
+    <div class="card mt-5 shadow-lg border-primary rounded-3" style="max-width: 80%;padding:3%; margin-left: auto; margin-right: auto;">
+    <!-- Display session message (if any) -->
+    <?php if (isset($_SESSION['message'])): ?>
+        <div class="alert alert-<?= $_SESSION['msg_type']; ?>">
+            <?= $_SESSION['message']; ?>
+        </div>
+        <?php
+        // Clear the message after displaying it
+        unset($_SESSION['message']);
+        unset($_SESSION['msg_type']);
+        ?>
+    <?php endif; ?>
 
 
-    </main>
-  </div>
+
+    <!-- Form to Edit User -->
+    <form action="edit_user.php?id=<?= $userId; ?>" method="POST">
+        <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" class="form-control" id="fullName" name="fullName" value="<?= $fullName; ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="<?= $email; ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="role">Role</label>
+            <select class="form-control" id="role" name="role" required>
+                <option value="admin" <?= ($role == 'admin' ? 'selected' : ''); ?>>Admin</option>
+                <option value="user" <?= ($role == 'user' ? 'selected' : ''); ?>>User</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary my-4">Update User</button>
+
+    </form>
+    </div>
+</div>
+<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+
+
+</main>
+</div>
 </div>
 
 <script>
-    // Function to format the date
-    function formatDate(date) {
-        var day = date.getDate();
-        var month = date.getMonth() + 1; // Months are zero-indexed
-        var year = date.getFullYear();
-        
-        // Add leading zero to single-digit day and month
-        return `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}/${year}`;
-    }
+// Function to format the date
+function formatDate(date) {
+    var day = date.getDate();
+    var month = date.getMonth() + 1; // Months are zero-indexed
+    var year = date.getFullYear();
+    
+    // Add leading zero to single-digit day and month
+    return `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}/${year}`;
+}
 
-    // Get the current date and update the span
-    document.addEventListener("DOMContentLoaded", function() {
-        var currentDate = new Date();
-        var formattedDate = formatDate(currentDate);
-        document.getElementById("current-date").textContent = formattedDate;
-    });
+// Get the current date and update the span
+document.addEventListener("DOMContentLoaded", function() {
+    var currentDate = new Date();
+    var formattedDate = formatDate(currentDate);
+    document.getElementById("current-date").textContent = formattedDate;
+});
 </script>
 
 <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
 </html>

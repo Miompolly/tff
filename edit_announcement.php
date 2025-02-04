@@ -1,9 +1,86 @@
-<?php 
-session_start(); 
+<?php
+// Start session to show success/error messages
+session_start();
 
-if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
-    header("Location: index.php");
-    exit();
+// Check if ID is provided
+if (isset($_GET['id'])) {
+    $announcement_id = $_GET['id'];
+
+    // Connect to the database
+    $conn = new mysqli('localhost', 'root', '', 'tff');
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Query to fetch the announcement data
+    $sql = "SELECT * FROM announcements WHERE announcement_id = ?";
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("i", $announcement_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $announcement = $result->fetch_assoc();
+            $title = $announcement['title'];
+            $content = $announcement['content'];
+            $date = $announcement['date'];
+        } else {
+            $_SESSION['message'] = "Announcement not found.";
+            $_SESSION['msg_type'] = "danger";
+            header("Location: announcement.php"); // Redirect back if not found
+            exit;
+        }
+
+        // Close statement
+        $stmt->close();
+    }
+
+    // Close connection
+    $conn->close();
+} else {
+    $_SESSION['message'] = "Invalid announcement ID.";
+    $_SESSION['msg_type'] = "danger";
+    header("Location: announcement.php"); // Redirect back if no ID is provided
+    exit;
+}
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $new_title = $_POST['title'];
+    $new_content = $_POST['content'];
+    $new_date = $_POST['date'];
+
+    // Connect to the database
+    $conn = new mysqli('localhost', 'root', '', 'tff');
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Update the announcement data
+    $sql = "UPDATE announcements SET title = ?, content = ?, date = ? WHERE announcement_id = ?";
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("sssi", $new_title, $new_content, $new_date, $announcement_id);
+        
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Announcement updated successfully.";
+            $_SESSION['msg_type'] = "success";
+            header("Location: announcement.php"); // Redirect to list page after success
+            exit;
+        } else {
+            $_SESSION['message'] = "Error updating announcement.";
+            $_SESSION['msg_type'] = "danger";
+        }
+
+        // Close statement
+        $stmt->close();
+    }
+
+    // Close connection
+    $conn->close();
 }
 ?>
 <!DOCTYPE html>
@@ -298,7 +375,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
+        <h1 class="h2">Edit Announcement</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
         
         
@@ -312,34 +389,70 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
         
         </div>
       </div>
+      <div class="container mt-4">
 
-      <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+    <div class="container mt-4">
+      
+
+        <!-- Display session message if any -->
+        <?php if (isset($_SESSION['message'])): ?>
+            <div class="alert alert-<?= $_SESSION['msg_type']; ?>">
+                <?= $_SESSION['message']; ?>
+            </div>
+            <?php
+            // Clear the message after displaying it
+            unset($_SESSION['message']);
+            unset($_SESSION['msg_type']);
+            ?>
+        <?php endif; ?>
+
+        <!-- Form to Edit Announcement -->
+        <form action="edit_announcement.php?id=<?= $announcement_id; ?>" method="POST">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" name="title" value="<?= $title; ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Content</label>
+                <textarea class="form-control" id="content" name="content" rows="5" required><?= $content; ?></textarea>
+            </div>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" class="form-control" id="date" name="date" value="<?= $date; ?>" required>
+            </div>
+            <button type="submit" class="btn btn-primary my-4">Update Announcement</button>
+        </form>
+    </div>
+
+    <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 
 
-    </main>
-  </div>
+</main>
+</div>
 </div>
 
 <script>
-    // Function to format the date
-    function formatDate(date) {
-        var day = date.getDate();
-        var month = date.getMonth() + 1; // Months are zero-indexed
-        var year = date.getFullYear();
-        
-        // Add leading zero to single-digit day and month
-        return `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}/${year}`;
-    }
+// Function to format the date
+function formatDate(date) {
+    var day = date.getDate();
+    var month = date.getMonth() + 1; // Months are zero-indexed
+    var year = date.getFullYear();
+    
+    // Add leading zero to single-digit day and month
+    return `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}/${year}`;
+}
 
-    // Get the current date and update the span
-    document.addEventListener("DOMContentLoaded", function() {
-        var currentDate = new Date();
-        var formattedDate = formatDate(currentDate);
-        document.getElementById("current-date").textContent = formattedDate;
-    });
+// Get the current date and update the span
+document.addEventListener("DOMContentLoaded", function() {
+    var currentDate = new Date();
+    var formattedDate = formatDate(currentDate);
+    document.getElementById("current-date").textContent = formattedDate;
+});
 </script>
 
 <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
 </html>

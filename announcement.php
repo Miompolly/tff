@@ -298,7 +298,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
+        <h1 class="h2">Manage announcement</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
         
         
@@ -312,7 +312,121 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
         
         </div>
       </div>
+      <div class="container mt-4">
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4" style="margin-left: 15px; width: 100%; padding-top: 20px;">
 
+    <div class="container mt-4">
+       
+    <?php
+// Start the session to access the message
+
+// Check if a message is set
+if (isset($_SESSION['message'])):
+    // Get the message and message type
+    $message = $_SESSION['message'];
+    $msg_type = $_SESSION['msg_type'];
+    
+    // Display the message (you can style it with CSS based on the message type)
+    echo "<div class='alert alert-$msg_type'>$message</div>";
+    
+    // Clear the message from the session so it doesn't show again after a page refresh
+    unset($_SESSION['message']);
+    unset($_SESSION['msg_type']);
+endif;
+?>
+
+       
+
+            <!-- Table to Display Announcements -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+// Connect to the database
+$conn = new mysqli('localhost', 'root', '', 'tff');
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Query to fetch announcements data, ordered by date (latest first)
+$sql = "SELECT * FROM announcements ORDER BY date DESC";
+$result = $conn->query($sql);
+
+// Check if records were found
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        echo "<tr>
+                <td>" . $row["announcement_id"] . "</td>
+                <td>" . $row["title"] . "</td>
+                <td>" . $row["content"] . "</td>
+                <td>" . $row["date"] . "</td>
+                <td><a href='edit_announcement.php?id=" . $row["announcement_id"] . "' class='btn btn-warning btn-sm'>Edit</a>
+                    <a href='delete_announcement.php?id=" . $row["announcement_id"] . "' class='btn btn-danger btn-sm'>Delete</a>
+                </td>
+            </tr>";
+    }
+} else {
+    echo "<tr><td colspan='5'>No announcements found</td></tr>";
+}
+
+// Close connection
+$conn->close();
+?>
+
+                </tbody>
+            </table>
+        <!-- Add Announcement Button -->
+        <div class="text-right mb-3">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAnnouncementModal">
+                    Add New Announcement
+                </button>
+            </div>
+
+        <!-- Modal for Adding New Announcement -->
+        <div class="modal fade" id="addAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="addAnnouncementModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAnnouncementModalLabel">Add New Announcement</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form to Add Announcement -->
+                        <form action="add_announcement_action.php" method="POST">
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="content">Content</label>
+                                <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Announcement</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+</div>
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 
 
@@ -340,6 +454,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
 </script>
 
 <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
 </html>
