@@ -1,96 +1,11 @@
-<?php
-session_start();
+<?php 
+session_start(); 
 
-// Check if an announcement ID is provided
-if (isset($_GET['id'])) {
-    $announcement_id = $_GET['id'];
-
-    // Connect to the database
-    $conn = new mysqli('localhost', 'root', '', 'tff');
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Fetch the announcement data
-    $sql = "SELECT * FROM announcements WHERE id = ?";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $announcement_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $announcement = $result->fetch_assoc();
-            $title = $announcement['title'];
-            $content = $announcement['content'];
-            $date = $announcement['date'];
-            $image = $announcement['image']; // Retrieve image data
-        } else {
-            $_SESSION['message'] = "Announcement not found.";
-            $_SESSION['msg_type'] = "danger";
-            header("Location: announcement.php");
-            exit;
-        }
-
-        $stmt->close();
-    }
-
-    $conn->close();
-} else {
-    $_SESSION['message'] = "Invalid announcement ID.";
-    $_SESSION['msg_type'] = "danger";
-    header("Location: announcement.php");
-    exit;
-}
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $new_title = $_POST['title'];
-    $new_content = $_POST['content'];
-    $new_date = $_POST['date'];
-    $new_image = NULL;
-
-    // Reconnect to the database
-    $conn = new mysqli('localhost', 'root', '', 'tff');
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Check if a new image is uploaded
-    if (!empty($_FILES['image']['tmp_name'])) {
-        $new_image = file_get_contents($_FILES['image']['tmp_name']); // Read the new image
-    }
-
-    // Update query based on whether a new image is uploaded
-    if ($new_image) {
-        $sql = "UPDATE announcements SET title = ?, content = ?, date = ?, image = ? WHERE id = ?";
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("ssssi", $new_title, $new_content, $new_date, $new_image, $announcement_id);
-        }
-    } else {
-        $sql = "UPDATE announcements SET title = ?, content = ?, date = ? WHERE id = ?";
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("sssi", $new_title, $new_content, $new_date, $announcement_id);
-        }
-    }
-
-    if ($stmt->execute()) {
-        $_SESSION['message'] = "Announcement updated successfully.";
-        $_SESSION['msg_type'] = "success";
-        header("Location: announcement.php");
-        exit;
-    } else {
-        $_SESSION['message'] = "Error updating announcement.";
-        $_SESSION['msg_type'] = "danger";
-    }
-
-    $stmt->close();
-    $conn->close();
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
+    header("Location: index.php");
+    exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -383,7 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Edit Announcement</h1>
+        <h1 class="h2">Donations</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
         
         
@@ -398,69 +313,209 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
       </div>
       <div class="container mt-4">
+      
+    
+    <!-- Table to display user data -->
+    <?php
+
+if (isset($_SESSION['message'])) {
+    echo "<div class='alert alert-{$_SESSION['msg_type']}'>
+            {$_SESSION['message']}
+          </div>";
+    unset($_SESSION['message']); // Remove message after displaying
+}
+?>
 
     <div class="container mt-4">
-      
+    <?php
+// Connect to the database
+$conn = new mysqli('localhost', 'root', '', 'tff');
 
-        <!-- Display session message if any -->
-        <?php if (isset($_SESSION['message'])): ?>
-            <div class="alert alert-<?= $_SESSION['msg_type']; ?>">
-                <?= $_SESSION['message']; ?>
-            </div>
-            <?php
-            // Clear the message after displaying it
-            unset($_SESSION['message']);
-            unset($_SESSION['msg_type']);
-            ?>
-        <?php endif; ?>
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-        <!-- Form to Edit Announcement -->
-        <form action="edit_announcement.php?id=<?= $announcement_id; ?>" method="POST">
-            <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" name="title" value="<?= $title; ?>" required>
+// Query to fetch donations from the last month and order them by newest date
+$sql = "SELECT id, donation_type, email, whatsapp, donation_details, created_at, status
+        FROM donations
+        WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+        ORDER BY created_at DESC";
+
+$result = $conn->query($sql);
+?>
+
+<!-- Table to display donations -->
+<table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Donation Type</th>
+                <th>Email</th>
+                <th>WhatsApp</th>
+                <th>Donation Details</th>
+                <th>Created At</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <tr>
+                    <td><?= $row["id"] ?></td>
+                    <td><?= $row["donation_type"] ?></td>
+                    <td><?= $row["email"] ?></td>
+                    <td><?= $row["whatsapp"] ?></td>
+                    <td><?= $row["donation_details"] ?></td>
+                    <td><?= $row["created_at"] ?></td>
+                    <td><?= $row["status"] ?></td>
+                    <td>
+                        <!-- Edit Button -->
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"
+                                data-id="<?= $row['id'] ?>" 
+                                data-status="<?= $row['status'] ?>">
+                            Edit
+                        </button>
+                        <!-- Delete Button -->
+                        <a href='delete_donation.php?id=<?= $row["id"] ?>' class='btn btn-danger btn-sm'>Delete</a>
+                    </td>
+                </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Donation Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="form-group">
-                <label for="content">Content</label>
-                <textarea class="form-control" id="content" name="content" rows="5" required><?= $content; ?></textarea>
+            <div class="modal-body">
+                <form id="updateStatusForm" method="POST" action="update_donation.php">
+                    <input type="hidden" id="donation_id" name="donation_id">
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Select Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="date">Date</label>
-                <input type="date" class="form-control" id="date" name="date" value="<?= $date; ?>" required>
-            </div>
-            <button type="submit" class="btn btn-primary my-4">Update Announcement</button>
-        </form>
+        </div>
+    </div>
+</div>
+
+
+    <div class="text-right mb-3">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDonationModal">
+            Add New Donation
+        </button>
     </div>
 
-    <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-
-
-</main>
+    <!-- Modal for Adding Donation -->
+    <div class="modal fade" id="addDonationModal" tabindex="-1" role="dialog" aria-labelledby="addDonationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDonationModalLabel">Add New Donation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form to Add Donation -->
+                    <form action="register_donation.php" method="POST">
+                        <div class="form-group">
+                            <label for="email">Donor Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="donationType">Donation Type</label>
+                            <select class="form-control" id="donationType" name="donationType" required>
+                                <option value="" selected disabled>Select Donation Type</option>
+                                <option value="Students">Students</option>
+                                <option value="Pastors">Pastors' Pension</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="whatsapp">WhatsApp Number</label>
+                            <input type="tel" class="form-control" id="whatsapp" name="whatsapp" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="donationDetails">Donation Details</label>
+                            <textarea class="form-control" id="donationDetails" name="donationDetails" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Donation</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+    </main>
+  </div>
 </div>
 
 <script>
-// Function to format the date
-function formatDate(date) {
-    var day = date.getDate();
-    var month = date.getMonth() + 1; // Months are zero-indexed
-    var year = date.getFullYear();
-    
-    // Add leading zero to single-digit day and month
-    return `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}/${year}`;
-}
+    // Function to format the date
+    function formatDate(date) {
+        var day = date.getDate();
+        var month = date.getMonth() + 1; // Months are zero-indexed
+        var year = date.getFullYear();
+        
+        // Add leading zero to single-digit day and month
+        return `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}/${year}`;
+    }
 
-// Get the current date and update the span
-document.addEventListener("DOMContentLoaded", function() {
-    var currentDate = new Date();
-    var formattedDate = formatDate(currentDate);
-    document.getElementById("current-date").textContent = formattedDate;
+    // Get the current date and update the span
+    document.addEventListener("DOMContentLoaded", function() {
+        var currentDate = new Date();
+        var formattedDate = formatDate(currentDate);
+        document.getElementById("current-date").textContent = formattedDate;
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    var editModal = document.getElementById("editModal");
+    
+    editModal.addEventListener("show.bs.modal", function (event) {
+        var button = event.relatedTarget;
+        var donationId = button.getAttribute("data-id");
+        var status = button.getAttribute("data-status");
+
+        document.getElementById("donation_id").value = donationId;
+        document.getElementById("status").value = status;
+    });
+
+
+});
+
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var editModal = document.getElementById("editModal");
+
+    editModal.addEventListener("show.bs.modal", function (event) {
+        var button = event.relatedTarget;
+        var donationId = button.getAttribute("data-id");
+        var status = button.getAttribute("data-status");
+
+        document.getElementById("donation_id").value = donationId;
+        document.getElementById("status").value = status;
+    });
 });
 </script>
 
 <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
 </html>

@@ -462,16 +462,15 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
             <div class="col-md-6 mb-4">
                 <div class="donation-card p-4 border rounded shadow">
                     <h3 class="mb-4">Donate for Students</h3>
-                    <p>Your generous donations will provide students with essential tools, clothes, and materials they need to succeed in their education. With your support, we can help equip them for their academic journey and ensure they have access to the resources they need to thrive.</p>
-                    <p>Whether it's donating clothes, school supplies, or contributing to the overall welfare of students in need, your donation makes a difference.</p>
+                    <p>Your generous donations will provide students with essential tools, clothes, and materials they need to succeed in their education.</p>
                     <p><strong>Ways you can help:</strong></p>
                     <ul>
                         <li>Provide essential school supplies and tools for students.</li>
-                        <li>Donate clothes and other essentials for students in need.</li>
-                        <li>Support students from low-income backgrounds in achieving their goals.</li>
+                        <li>Donate clothes and other essentials.</li>
+                        <li>Support students from low-income backgrounds.</li>
                     </ul>
                     <div class="text-center mt-4">
-                        <a href="donate-students.html" class="btn btn-primary btn-lg">Donate</a>
+                        <button class="btn btn-primary btn-lg donate-btn" data-bs-toggle="modal" data-bs-target="#donationModal" data-type="Students">Donate</button>
                     </div>
                 </div>
             </div>
@@ -480,22 +479,56 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
             <div class="col-md-6 mb-4">
                 <div class="donation-card p-4 border rounded shadow">
                     <h3 class="mb-4">Donate for Pastors' Pension</h3>
-                    <p>Pastors dedicate their lives to serving their communities, often with little financial support. Your donation will contribute to a pension fund to ensure that pastors can live with dignity in their later years, providing for their needs when they are no longer actively ministering.</p>
-                    <p>Supporting pastors in their retirement is a way to honor their lifelong commitment to the spiritual and moral welfare of the community. Your donation will ensure they are cared for as they transition into their retirement years.</p>
+                    <p>Your donation will contribute to a pension fund to ensure that pastors can live with dignity in their later years.</p>
                     <p><strong>How your donation helps:</strong></p>
                     <ul>
-                        <li>Provide financial security for pastors in their retirement.</li>
-                        <li>Ensure pastors have the means to care for their families after years of service.</li>
-                        <li>Support pastors in continuing their spiritual journey without financial worry.</li>
+                        <li>Provide financial security for retired pastors.</li>
+                        <li>Ensure pastors can care for their families.</li>
+                        <li>Support pastors in their spiritual journey without financial worry.</li>
                     </ul>
                     <div class="text-center mt-4">
-                        <a href="donate-pastors.html" class="btn btn-success btn-lg">Donate</a>
+                        <button class="btn btn-success btn-lg donate-btn" data-bs-toggle="modal" data-bs-target="#donationModal" data-type="Pastors">Donate</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<div class="modal fade" id="donationModal" tabindex="-1" aria-labelledby="donationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="donationModalLabel">Make a Donation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="donationForm" action="register_donation.php" method="POST">
+                    <div class="mb-3">
+                        <label for="donationType" class="form-label">Donating For</label>
+                        <select class="form-control" id="donationType" name="donationType" required>
+                            <option value="" selected disabled>Select Donation Type</option>
+                            <option value="Students">Students</option>
+                            <option value="Pastors">Pastors' Pension</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="whatsapp" class="form-label">WhatsApp Number</label>
+                        <input type="tel" class="form-control" id="whatsapp" name="whatsapp" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="donationDetails" class="form-label">What would you like to donate?</label>
+                        <textarea class="form-control" id="donationDetails" name="donationDetails" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Submit Donation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Donation Section End -->
 
@@ -597,8 +630,57 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
         </div>
     </div>
     
-  
+    <?php
 
+
+
+
+     $conn = new mysqli('localhost', 'root', '', 'tff');
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    $query = "SELECT id, title, content,image, DATE_FORMAT(date, '%M %d, %Y') as formatted_date 
+    FROM announcements 
+    ORDER BY date DESC 
+    LIMIT 3";
+     $result = mysqli_query($conn, $query);
+?>
+
+<section id="announcement" class="container-fluid py-5">
+<div class="container-fluid py-5">
+    <div class="container">
+        <h1 class="display-4 text-center mb-5">Latest Announcements</h1>
+        <hr>
+        <div class="owl-carousel testimonial-carousel">
+            <?php while ($row = mysqli_fetch_assoc($result)) : ?>
+                <div class="testimonial-item">
+                    <?php if (!empty($row['image'])) : ?>
+                        <img class="position-relative  bg-white shadow mx-auto" 
+                            src="data:image/jpeg;base64,<?php echo base64_encode($row['image']); ?>" 
+                            style="width: 300px; height: 200px; padding: 12px; margin-bottom: -50px; z-index: 1;" 
+                            alt="<?php echo htmlspecialchars($row['title']); ?>">
+                    <?php else : ?>
+                        <img class="position-relative border-8 bg-white shadow mx-auto" 
+                            src="img/default.png" 
+                            style="width: 300px; height: 200px; padding: 12px; margin-bottom: -50px; z-index: 1;" 
+                            alt="Default Image">
+                    <?php endif; ?>
+                    <div class="bg-light text-center p-4 pt-0">
+                        <h5 class="font-weight-medium mt-5">
+                            <?php echo htmlspecialchars($row['title']); ?>
+                        </h5>
+                        <p><?php echo htmlspecialchars($row['content']); ?></p>
+                        <p class="text-muted font-italic"><?php echo $row['formatted_date']; ?></p>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        </div>
+    </div>
+</div>
+</section>
     <!-- Footer Start -->
     <div class="container-fluid bg-primary text-white mt-5 pt-5 px-sm-3 px-md-5" id="aboutus">
         <div class="row pt-5">
@@ -673,6 +755,12 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="lib/counterup/counterup.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <!-- Bootstrap CSS (Add inside <head>) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS (Add before </body>) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <!-- Contact Javascript File -->
     <script src="mail/jqBootstrapValidation.min.js"></script>
@@ -680,6 +768,18 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".donate-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                document.getElementById("donationType").value = this.getAttribute("data-type");
+            });
+        });
+
+        
+    });
+</script>
+
 </body>
 
 </html>

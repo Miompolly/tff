@@ -15,7 +15,7 @@ if (isset($_GET['id'])) {
     }
 
     // Prepare the SQL statement to delete the announcement
-    $sql = "DELETE FROM announcements WHERE announcement_id = ?";
+    $sql = "DELETE FROM announcements WHERE id = ?";
 
     // Prepare statement and bind parameter
     if ($stmt = $conn->prepare($sql)) {

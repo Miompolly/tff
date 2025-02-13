@@ -366,12 +366,12 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         echo "<tr>
-                <td>" . $row["announcement_id"] . "</td>
+                <td>" . $row["id"] . "</td>
                 <td>" . $row["title"] . "</td>
                 <td>" . $row["content"] . "</td>
                 <td>" . $row["date"] . "</td>
-                <td><a href='edit_announcement.php?id=" . $row["announcement_id"] . "' class='btn btn-warning btn-sm'>Edit</a>
-                    <a href='delete_announcement.php?id=" . $row["announcement_id"] . "' class='btn btn-danger btn-sm'>Delete</a>
+                <td><a href='edit_announcement.php?id=" . $row["id"] . "' class='btn btn-warning btn-sm'>Edit</a>
+                    <a href='delete_announcement.php?id=" . $row["id"] . "' class='btn btn-danger btn-sm'>Delete</a>
                 </td>
             </tr>";
     }
@@ -394,31 +394,36 @@ $conn->close();
 
         <!-- Modal for Adding New Announcement -->
         <div class="modal fade" id="addAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="addAnnouncementModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addAnnouncementModalLabel">Add New Announcement</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAnnouncementModalLabel">Add New Announcement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to Add Announcement -->
+                <form action="add_announcement_action.php" method="POST" enctype="multipart/form-data">
+                    <div class="form-group my-2">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
                     </div>
-                    <div class="modal-body">
-                        <!-- Form to Add Announcement -->
-                        <form action="add_announcement_action.php" method="POST">
-                            <div class="form-group">
-                                <label for="title">Title</label>
-                                <input type="text" class="form-control" id="title" name="title" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="content">Content</label>
-                                <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Announcement</button>
-                        </form>
+                    <div class="form-group my-2" >
+                        <label for="content">Content</label>
+                        <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
                     </div>
-                </div>
+                    <div class="form-group my-2">
+                        <label for="image">Upload Image (Optional)</label>
+                        <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary my-3">Add Announcement</button>
+                </form>
             </div>
         </div>
+    </div>
+</div>
+
     </div>
 </main>
 
