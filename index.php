@@ -32,6 +32,34 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <style>
+    .donation-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .donation-list li {
+        background-color: #f8f9fa;
+        margin: 8px 0;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 1.1em;
+        display: flex;
+        align-items: center;
+    }
+
+    .donation-list li i {
+        color: #28a745;
+        /* Green color for checkmark */
+        margin-right: 10px;
+    }
+
+    .donation-card ul li:hover {
+        background-color: #e9ecef;
+        cursor: pointer;
+    }
+    </style>
+
 </head>
 
 <body>
@@ -496,80 +524,115 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
             <h1 class="display-4 text-center mb-5">Donate</h1>
             <hr>
             <div class="row">
-                <!-- Donation for Students Section -->
-                <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="donation-card p-4 border rounded shadow h-100">
+                <!-- First Row -->
+                <div class="col-md-6 mb-4">
+                    <div class="donation-card p-4 border rounded shadow h-100 text-center">
                         <h3 class="mb-4">Support Students</h3>
                         <p>Your donations provide students with essential education tools and materials.</p>
                         <p><strong>Ways you can help:</strong></p>
-                        <ul>
-                            <li>School supplies and tools</li>
-                            <li>Uniforms and clothes</li>
-                            <li>Support low-income students</li>
+                        <ul class="donation-list">
+                            <li><i class="bi bi-check-circle-fill"></i> School supplies and tools</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Uniforms and clothes</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Support low-income students</li>
                         </ul>
                         <div class="text-center mt-4">
                             <button class="btn btn-primary btn-lg donate-btn" data-bs-toggle="modal"
                                 data-bs-target="#donationModal" data-type="Students">Donate</button>
                         </div>
+                        <div class="text-center mt-4">
+                            <p><strong>Donate via Momo Pay</strong>
+                                <hr>
+                                Dial <span class="text-danger">*182*8*1*1127373#</span>
+                            </p>
+                            <img src="img/mtn.jpeg" alt="Momo Pay" class="mb-3" width="100">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Donation for Pastors Section -->
-                <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="donation-card p-4 border rounded shadow h-100">
+                <!-- Second Row -->
+                <div class="col-md-6 mb-4">
+                    <div class="donation-card p-4 border rounded shadow h-100 text-center">
                         <h3 class="mb-4">Retired Pastors</h3>
                         <p>Help ensure pastors can live with dignity in their later years.</p>
                         <p><strong>Your impact:</strong></p>
-                        <ul>
-                            <li>Retirement security</li>
-                            <li>Family support</li>
-                            <li>Peace of mind</li>
+                        <ul class="donation-list">
+                            <li><i class="bi bi-check-circle-fill"></i> Retirement security</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Family support</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Peace of mind</li>
                         </ul>
                         <div class="text-center mt-4">
                             <button class="btn btn-success btn-lg donate-btn" data-bs-toggle="modal"
                                 data-bs-target="#donationModal" data-type="Pastors">Donate</button>
                         </div>
+                        <div class="text-center mt-4">
+                            <p><strong>Donate via Momo Pay</strong>
+                                <hr>
+                                Dial <span class="text-danger">*182*8*1*1127373#</span>
+                            </p>
+                            <img src="img/mtn.jpeg" alt="Momo Pay" class="mb-3" width="100">
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Hospital Visitation Support -->
-                <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="donation-card p-4 border rounded shadow h-100">
+            <div class="row">
+                <!-- Third Row -->
+                <div class="col-md-6 mb-4">
+                    <div class="donation-card p-4 border rounded shadow h-100 text-center">
                         <h3 class="mb-4">Hospital Visit Support</h3>
                         <p>Help provide comfort to those in hospital.</p>
                         <p><strong>Your help provides:</strong></p>
-                        <ul>
-                            <li>Nutritious meals</li>
-                            <li>Basic necessities</li>
-                            <li>Care packages</li>
+                        <ul class="donation-list">
+                            <li><i class="bi bi-check-circle-fill"></i> Nutritious meals</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Basic necessities</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Care packages</li>
                         </ul>
                         <div class="text-center mt-4">
                             <button class="btn btn-info btn-lg donate-btn" data-bs-toggle="modal"
                                 data-bs-target="#donationModal" data-type="HospitalVisit">Donate</button>
                         </div>
+                        <div class="text-center mt-4">
+                            <p><strong>Donate via Momo Pay</strong>
+                                <hr>
+                                Dial <span class="text-danger">*182*8*1*1127373#</span>
+                            </p>
+                            <img src="img/mtn.jpeg" alt="Momo Pay" class="mb-3" width="100">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Medical Insurance Support -->
-                <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="donation-card p-4 border rounded shadow h-100">
+                <!-- Fourth Row -->
+                <div class="col-md-6 mb-4">
+                    <div class="donation-card p-4 border rounded shadow h-100 text-center">
                         <h3 class="mb-4">Medical Insurance</h3>
                         <p>Help provide healthcare coverage for those in need.</p>
                         <p><strong>Coverage includes:</strong></p>
-                        <ul>
-                            <li>Annual insurance fees</li>
-                            <li>Emergency coverage</li>
-                            <li>Basic healthcare</li>
+                        <ul class="donation-list">
+                            <li><i class="bi bi-check-circle-fill"></i> Annual insurance fees</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Emergency coverage</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Basic healthcare</li>
                         </ul>
                         <div class="text-center mt-4">
                             <button class="btn btn-warning btn-lg donate-btn" data-bs-toggle="modal"
                                 data-bs-target="#donationModal" data-type="Insurance">Donate</button>
+                        </div>
+                        <div class="text-center mt-4">
+                            <p><strong>Donate via Momo Pay</strong>
+                                <hr>
+                                Dial <span class="text-danger">*182*8*1*1127373#</span>
+                            </p>
+                            <img src="img/mtn.jpeg" alt="Momo Pay" class="mb-3" width="100">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- CSS (You can add this in your stylesheets) -->
+
+
+
 
     <!-- Update the donation modal options -->
     <div class="modal fade" id="donationModal" tabindex="-1" aria-labelledby="donationModalLabel" aria-hidden="true">
