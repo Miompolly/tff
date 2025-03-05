@@ -407,7 +407,7 @@ endif;
                         <tbody>
                             <?php
             // Connect to the database
-  require_once 'db_connection.php';
+  require 'db_connection.php';
 
             // Query to fetch user data
             $sql = "SELECT * FROM users";
