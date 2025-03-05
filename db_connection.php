@@ -9,7 +9,8 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 // Create connection
 try {
-    $conn = new mysqli($servername, $username, $password, $database);
+    $conn = new mysqli($servername, $username, $password, $database, 3306);
+
     $conn->set_charset("utf8mb4"); // Set charset for security
 } catch (Exception $e) {
     error_log($e->getMessage()); // Log error
