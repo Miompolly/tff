@@ -7,12 +7,7 @@ if (isset($_GET['id'])) {
     $announcement_id = $_GET['id'];
 
     // Connect to the database
-    $conn = new mysqli('localhost', 'root', '', 'tff');
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    require_once 'db_connection.php';
 
     // Prepare the SQL statement to delete the announcement
     $sql = "DELETE FROM announcements WHERE id = ?";

@@ -13,14 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // Connect to the database
-    $conn = new mysqli('localhost', 'root', '', 'tff');
-
-    // Check connection
-    if ($conn->connect_error) {
-        $_SESSION['message'] = "Connection failed: " . $conn->connect_error;
-        header("Location: users.php"); // Redirect to the page where you want to display the message
-        exit();
-    }
+     require_once 'db_connection.php';
 
     // SQL query to insert the new user
     $sql = "INSERT INTO users (FullName, email, password, role) VALUES ('$fullName', '$email', '$hashedPassword', '$role')";

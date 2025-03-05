@@ -1,11 +1,6 @@
 <?php
 // Database connection
-$servername = "localhost";  
-$username = "root";         
-$password = "";             
-$dbname = "tff";  
-
-$conn = new mysqli($servername, $username, $password, $dbname);
+require_once 'db_connection.php';
 
 // Check connection
 if ($conn->connect_error) {

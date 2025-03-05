@@ -3,13 +3,7 @@
 session_start();
 
 // Connect to the database
-$conn = new mysqli('localhost', 'root', '', 'tff');
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
+require_once 'db_connection.php';
 // Check if 'id' parameter is provided in the URL
 if (isset($_GET['id'])) {
     $user_id = $_GET['id'];

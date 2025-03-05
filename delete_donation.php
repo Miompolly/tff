@@ -7,13 +7,7 @@ if (isset($_GET['id'])) {
     $donation_id = $_GET['id'];
 
     // Connect to the database
-    $conn = new mysqli('localhost', 'root', '', 'tff');
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
+     require_once 'db_connection.php';
     // SQL query to delete the donation record
     $sql = "DELETE FROM donations WHERE id = ?";
 

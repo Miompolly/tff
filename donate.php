@@ -390,12 +390,7 @@ if (isset($_SESSION['message'])) {
                     <div class="container mt-4">
                         <?php
 // Connect to the database
-$conn = new mysqli('localhost', 'root', '', 'tff');
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once 'db_connection.php';
 
 // Query to fetch donations from the last month and order them by newest date
 $sql = "SELECT id, donation_type, email, whatsapp, donation_details, created_at, status

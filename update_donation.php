@@ -15,13 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['donation_id']) && !em
     }
 
     // Connect to database
-    $conn = new mysqli('localhost', 'root', '', 'tff');
-    if ($conn->connect_error) {
-        $_SESSION['message'] = 'Database connection failed.';
-        $_SESSION['msg_type'] = 'danger';
-        header("Location: donate.php");
-        exit();
-    }
+    require_once 'db_connection.php';
 
     // Update status
     $sql = "UPDATE donations SET status = ? WHERE id = ?";
