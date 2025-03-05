@@ -7,6 +7,7 @@ if (isset($_GET['id'])) {
 
     // Connect to the database
     require_once 'db_connection.php';
+
     // Fetch the announcement data
     $sql = "SELECT * FROM announcements WHERE id = ?";
     if ($stmt = $conn->prepare($sql)) {
@@ -45,12 +46,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $new_date = $_POST['date'];
     $new_image = NULL;
 
+    // Validate date (optional: check if valid date format)
+    $date_obj = DateTime::createFromFormat('Y-m-d', $new_date);
+    if (!$date_obj || $date_obj->format('Y-m-d') !== $new_date) {
+        $_SESSION['message'] = "Invalid date format.";
+        $_SESSION['msg_type'] = "danger";
+        header("Location: edit_announcement.php?id=" . $announcement_id);
+        exit;
+    }
+
     // Reconnect to the database
     require_once 'db_connection.php';
 
     // Check if a new image is uploaded
     if (!empty($_FILES['image']['tmp_name'])) {
-        $new_image = file_get_contents($_FILES['image']['tmp_name']); // Read the new image
+        // Validate image type (optional, e.g., only allow jpg, png)
+        $allowed_types = ['image/jpeg', 'image/png'];
+        if (!in_array($_FILES['image']['type'], $allowed_types)) {
+            $_SESSION['message'] = "Invalid image type. Only JPG and PNG are allowed.";
+            $_SESSION['msg_type'] = "danger";
+            header("Location: edit_announcement.php?id=" . $announcement_id);
+            exit;
+        }
+
+        // Save the image to a folder (e.g., images/ directory)
+        $image_name = basename($_FILES['image']['name']);
+        $target_path = 'images/' . $image_name;
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
+            $new_image = $target_path; // Store the image path in the database
+        } else {
+            $_SESSION['message'] = "Error uploading image.";
+            $_SESSION['msg_type'] = "danger";
+            header("Location: edit_announcement.php?id=" . $announcement_id);
+            exit;
+        }
     }
 
     // Update query based on whether a new image is uploaded
@@ -80,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conn->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">

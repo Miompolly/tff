@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
 session_start(); 
 require 'db_connection.php';
 
@@ -18,18 +19,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $result->fetch_assoc();
 
         if (password_verify($password, $user['password'])) {
-            // Set session variables
-            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['FullName'] = $user['FullName'];
             $_SESSION['role'] = $user['role'];
 
-            // Redirect based on role
             if ($user['role'] == 'admin') {
-                header("Location: dashboard.php"); // Redirect admins to dashboard
+                header("Location: dashboard.php");
                 exit();
             } else {
-                header("Location: index.php"); // Stay on index.php for normal users
+                header("Location: index.php");
                 exit();
             }
         } else {

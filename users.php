@@ -1,10 +1,17 @@
-<?php 
+<?php
 session_start(); 
 
-if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
+if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
+
+if ($_SESSION['role'] != 'admin') {
+    header("Location: index.php");
+    exit();
+}
+
+// The rest of the code for your dashboard or admin page can go here
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
@@ -375,9 +382,9 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
                 </div>
                 <div class="container mt-4">
                     <?php
-// Start the session to access the message
+session_start();
 
-// Check if a message is set
+// Start the session to access the message
 if (isset($_SESSION['message'])):
     // Get the message and message type
     $message = $_SESSION['message'];
@@ -392,7 +399,6 @@ if (isset($_SESSION['message'])):
 endif;
 ?>
 
-
                     <!-- Table to display user data -->
                     <table class="table table-bordered">
                         <thead>
@@ -406,34 +412,34 @@ endif;
                         </thead>
                         <tbody>
                             <?php
-            // Connect to the database
-  require 'db_connection.php';
+        // Connect to the database
+        require 'db_connection.php';
 
-            // Query to fetch user data
-            $sql = "SELECT * FROM users";
-            $result = $conn->query($sql);
+        // Query to fetch user data
+        $sql = "SELECT * FROM users";
+        $result = $conn->query($sql);
 
-            // Check if records were found
-            if ($result->num_rows > 0) {
-                // Output data of each row
-                while($row = $result->fetch_assoc()) {
-                    echo "<tr>
-                            <td>" . $row["user_id"]. "</td>
-                            <td>" . $row["FullName"]. "</td>
-                            <td>" . $row["email"]. "</td>
-                            <td>" . $row["role"]. "</td>
-                            <td><a href='edit_user.php?id=" . $row["user_id"] . "' class='btn btn-warning btn-sm'>Edit</a>
-                                <a href='delete_user.php?id=" . $row["user_id"] . "' class='btn btn-danger btn-sm'>Delete</a>
-                            </td>
-                        </tr>";
-                }
-            } else {
-                echo "<tr><td colspan='5'>No users found</td></tr>";
+        // Check if records were found
+        if ($result->num_rows > 0) {
+            // Output data of each row
+            while ($row = $result->fetch_assoc()) {
+                echo "<tr>
+                        <td>" . $row["user_id"] . "</td>
+                        <td>" . $row["FullName"] . "</td>
+                        <td>" . $row["email"] . "</td>
+                        <td>" . $row["role"] . "</td>
+                        <td><a href='edit_user.php?id=" . $row["user_id"] . "' class='btn btn-warning btn-sm'>Edit</a>
+                            <a href='delete_user.php?id=" . $row["user_id"] . "' class='btn btn-danger btn-sm'>Delete</a>
+                        </td>
+                    </tr>";
             }
+        } else {
+            echo "<tr><td colspan='5'>No users found</td></tr>";
+        }
 
-            // Close connection
-            $conn->close();
-            ?>
+        // Close connection AFTER you've finished with the database
+        $conn->close();
+        ?>
                         </tbody>
                     </table>
 
@@ -476,7 +482,6 @@ endif;
                                             <select class="form-control" id="role" name="role" required>
                                                 <option value="admin">Admin</option>
                                                 <option value="user">User</option>
-
                                             </select>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Add User</button>
@@ -485,6 +490,7 @@ endif;
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 

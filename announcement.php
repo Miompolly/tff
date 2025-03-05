@@ -1,10 +1,17 @@
-<?php 
+<?php
 session_start(); 
 
-if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
+if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
+
+if ($_SESSION['role'] != 'admin') {
+    header("Location: index.php");
+    exit();
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
@@ -378,9 +385,9 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
                         style="margin-left: 15px; width: 100%; padding-top: 20px;">
 
                         <div class="container mt-4">
-
                             <?php
 // Start the session to access the message
+session_start();
 
 // Check if a message is set
 if (isset($_SESSION['message'])):
@@ -397,8 +404,6 @@ if (isset($_SESSION['message'])):
 endif;
 ?>
 
-
-
                             <!-- Table to Display Announcements -->
                             <table class="table table-bordered">
                                 <thead>
@@ -412,36 +417,36 @@ endif;
                                 </thead>
                                 <tbody>
                                     <?php
-// Connect to the database
-require_once 'db_connection.php';
+        // Connect to the database
+        require_once 'db_connection.php';
 
-// Query to fetch announcements data, ordered by date (latest first)
-$sql = "SELECT * FROM announcements ORDER BY date DESC";
-$result = $conn->query($sql);
+        // Query to fetch announcements data, ordered by date (latest first)
+        $sql = "SELECT * FROM announcements ORDER BY date DESC";
+        $result = $conn->query($sql);
 
-// Check if records were found
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "<tr>
-                <td>" . $row["id"] . "</td>
-                <td>" . $row["title"] . "</td>
-                <td>" . $row["content"] . "</td>
-                <td>" . $row["date"] . "</td>
-                <td><a href='edit_announcement.php?id=" . $row["id"] . "' class='btn btn-warning btn-sm'>Edit</a>
-                    <a href='delete_announcement.php?id=" . $row["id"] . "' class='btn btn-danger btn-sm'>Delete</a>
-                </td>
-            </tr>";
-    }
-} else {
-    echo "<tr><td colspan='5'>No announcements found</td></tr>";
-}
+        // Check if records were found
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo "<tr>
+                        <td>" . $row["id"] . "</td>
+                        <td>" . $row["title"] . "</td>
+                        <td>" . $row["content"] . "</td>
+                        <td>" . $row["date"] . "</td>
+                        <td><a href='edit_announcement.php?id=" . $row["id"] . "' class='btn btn-warning btn-sm'>Edit</a>
+                            <a href='delete_announcement.php?id=" . $row["id"] . "' class='btn btn-danger btn-sm'>Delete</a>
+                        </td>
+                    </tr>";
+            }
+        } else {
+            echo "<tr><td colspan='5'>No announcements found</td></tr>";
+        }
 
-// Close connection
-$conn->close();
-?>
-
+        // Close the database connection
+        $conn->close();
+        ?>
                                 </tbody>
                             </table>
+
                             <!-- Add Announcement Button -->
                             <div class="text-right mb-3">
                                 <button type="button" class="btn btn-primary" data-toggle="modal"
@@ -488,6 +493,11 @@ $conn->close();
                                     </div>
                                 </div>
                             </div>
+
+
+
+
+
 
                         </div>
                     </main>

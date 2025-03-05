@@ -1,10 +1,17 @@
-<?php 
+<?php
 session_start(); 
 
-if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
+if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
+
+if ($_SESSION['role'] != 'admin') {
+    header("Location: index.php");
+    exit();
+}
+
+// The rest of the code for your dashboard or admin page can go here
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
@@ -378,6 +385,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'user') {
 
                     <!-- Table to display user data -->
                     <?php
+session_start();
 
 if (isset($_SESSION['message'])) {
     echo "<div class='alert alert-{$_SESSION['msg_type']}'>
@@ -385,11 +393,7 @@ if (isset($_SESSION['message'])) {
           </div>";
     unset($_SESSION['message']); // Remove message after displaying
 }
-?>
 
-                    <div class="container mt-4">
-                        <?php
-// Connect to the database
 require_once 'db_connection.php';
 
 // Query to fetch donations from the last month and order them by newest date
@@ -399,9 +403,15 @@ $sql = "SELECT id, donation_type, email, whatsapp, donation_details, created_at,
         ORDER BY created_at DESC";
 
 $result = $conn->query($sql);
+
+// Check if query was successful
+if ($result === false) {
+    echo "<p>Error fetching donations: " . $conn->error . "</p>";
+}
+
 ?>
 
-                        <!-- Table to display donations -->
+                    <div class="container mt-4">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -426,13 +436,11 @@ $result = $conn->query($sql);
                                     <td><?= $row["created_at"] ?></td>
                                     <td><?= $row["status"] ?></td>
                                     <td>
-                                        <!-- Edit Button -->
                                         <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                             data-bs-target="#editModal" data-id="<?= $row['id'] ?>"
                                             data-status="<?= $row['status'] ?>">
                                             Edit
                                         </button>
-                                        <!-- Delete Button -->
                                         <a href='delete_donation.php?id=<?= $row["id"] ?>'
                                             class='btn btn-danger btn-sm'>Delete</a>
                                     </td>
@@ -440,6 +448,7 @@ $result = $conn->query($sql);
                                 <?php endwhile; ?>
                             </tbody>
                         </table>
+
                         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
                             aria-hidden="true">
                             <div class="modal-dialog">
@@ -467,7 +476,6 @@ $result = $conn->query($sql);
                             </div>
                         </div>
 
-
                         <div class="text-right mb-3">
                             <button type="button" class="btn btn-primary" data-toggle="modal"
                                 data-target="#addDonationModal">
@@ -475,7 +483,6 @@ $result = $conn->query($sql);
                             </button>
                         </div>
 
-                        <!-- Modal for Adding Donation -->
                         <div class="modal fade" id="addDonationModal" tabindex="-1" role="dialog"
                             aria-labelledby="addDonationModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -487,7 +494,6 @@ $result = $conn->query($sql);
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <!-- Form to Add Donation -->
                                         <form action="register_donation.php" method="POST">
                                             <div class="form-group">
                                                 <label for="email">Donor Email</label>
@@ -520,7 +526,6 @@ $result = $conn->query($sql);
                             </div>
                         </div>
                     </div>
-
 
             </main>
         </div>
