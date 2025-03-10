@@ -85,7 +85,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
 
     <!-- Carousel Start -->
     <div class="container-fluid p-0">
-        <div id="header-carousel" class="carousel slide" data-ride="carousel">
+        <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <!-- First Carousel Item -->
                 <div class="carousel-item active">
@@ -94,8 +94,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                         <div class="p-3" style="max-width: 900px;">
                             <h4 class="text-white text-uppercase mb-md-3">Unity in Prayer</h4>
                             <h1 class="display-3 text-white mb-md-4">Find Peace Through Worship</h1>
-                            <a href="#" class="btn btn-primary py-md-3 px-md-5 mt-2" data-toggle="modal"
-                                data-target="#signupModal">Join Us</a>
+                            <a href="#" class="btn btn-primary py-md-3 px-md-5 mt-2" data-bs-toggle="modal"
+                                data-bs-target="#signupModal">Join Us</a>
                         </div>
                     </div>
                 </div>
@@ -123,18 +123,17 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                 </div>
             </div>
             <!-- Carousel Controls -->
-            <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
-                <div class="btn btn-secondary" style="width: 45px; height: 45px;">
-                    <span class="carousel-control-prev-icon mb-n2"></span>
-                </div>
+            <a class="carousel-control-prev" href="#header-carousel" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
             </a>
-            <a class="carousel-control-next" href="#header-carousel" data-slide="next">
-                <div class="btn btn-secondary" style="width: 45px; height: 45px;">
-                    <span class="carousel-control-next-icon mb-n2"></span>
-                </div>
+            <a class="carousel-control-next" href="#header-carousel" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
             </a>
         </div>
     </div>
+
 
     <!-- Carousel End -->
 
@@ -515,74 +514,83 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
 
             <h1 class="display-4 text-center mb-5">Meet the Members of TFF</h1>
             <hr>
-            <div class="owl-carousel testimonial-carousel">
-                <div class="testimonial-item">
-                    <img class="position-relative rounded-circle bg-white shadow mx-auto" src="img/t1.jpeg"
-                        style="width: 100px; height: 100px; padding: 12px; margin-bottom: -50px; z-index: 1;"
-                        alt="Bishop Gilbert Muvandimwe">
-                    <div class="bg-light text-center p-4 pt-0">
-                        <h5 class="font-weight-medium mt-5">International Missionary Bishop MUVANDIMWE Gilbert </h5>
-                        <p class="text-muted font-italic">Visionary</p>
-                    </div>
-                </div>
-                <div class="testimonial-item">
-                    <img class="position-relative rounded-circle bg-white shadow mx-auto" src="img/muho.jpeg"
-                        style="width: 100px; height: 100px; padding: 12px; margin-bottom: -50px; z-index: 1;"
-                        alt="Jeannette Umuhoza">
-                    <div class="bg-light text-center p-4 pt-0">
-                        <h5 class="font-weight-medium mt-5"> International Missionary Reverend Pastor Janet UMUHOZA</h5>
-                        <p class="text-muted font-italic">Managing Director</p>
-                    </div>
-                </div>
-                <div class="testimonial-item">
-                    <img class="position-relative rounded-circle bg-white shadow mx-auto" src="img/t2.jpeg"
-                        style="width: 100px; height: 100px; padding: 12px; margin-bottom: -50px; z-index: 1;"
-                        alt="Aimee Mukeshimana">
-                    <div class="bg-light text-center p-4 pt-0">
-                        <h5 class="font-weight-medium mt-5"> Bishop Dr Joseph MBANZA RUZIMA </h5>
-                        <p>Director in charge of missionary studies and evangelism </p>
 
+            <div class="row">
+                <!-- Testimonial 1 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="testimonial-item text-center">
+                        <img class="position-relative rounded-circle bg-white shadow mx-auto" src="img/t1 (1).jpeg"
+                            style="width: 100px; height: 100px; padding: 12px; margin-bottom: -50px; z-index: 1;"
+                            alt="Bishop Gilbert Muvandimwe">
+                        <div class="bg-light text-center p-4 pt-0">
+                            <h5 class="font-weight-medium mt-5">International Missionary Bishop MUVANDIMWE Gilbert</h5>
+                            <p class="text-muted font-italic">Visionary</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="testimonial-item text-center">
+                        <img class="position-relative rounded-circle bg-white shadow mx-auto" src="img/muho.jpeg"
+                            style="width: 100px; height: 100px; padding: 12px; margin-bottom: -50px; z-index: 1;"
+                            alt="Jeannette Umuhoza">
+                        <div class="bg-light text-center p-4 pt-0">
+                            <h5 class="font-weight-medium mt-5">International Missionary Reverend Pastor Janet UMUHOZA
+                            </h5>
+                            <p class="text-muted font-italic">Managing Director</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="testimonial-item text-center">
+                        <img class="position-relative rounded-circle bg-white shadow mx-auto" src="img/t2.jpeg"
+                            style="width: 100px; height: 100px; padding: 12px; margin-bottom: -50px; z-index: 1;"
+                            alt="Aimee Mukeshimana">
+                        <div class="bg-light text-center p-4 pt-0">
+                            <h5 class="font-weight-medium mt-5">Bishop Dr Joseph MBANZA RUZIMA</h5>
+                            <p>Director in charge of missionary studies and evangelism</p>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
     <?php
+$conn = new mysqli('localhost', 'root', '', 'tff');
 
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-
-
-     $conn = new mysqli('localhost', 'root', '', 'tff');
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    $query = "SELECT id, title, content,image, DATE_FORMAT(date, '%M %d, %Y') as formatted_date 
-    FROM announcements 
-    ORDER BY date DESC 
-    LIMIT 3";
-     $result = mysqli_query($conn, $query);
+$query = "SELECT id, title, content, image, DATE_FORMAT(date, '%M %d, %Y') as formatted_date 
+FROM announcements 
+ORDER BY date DESC 
+LIMIT 3";
+$result = mysqli_query($conn, $query);
 ?>
 
     <section id="announcement" class="container-fluid py-5">
-        <div class="container-fluid py-5">
-            <div class="container">
-                <h1 class="display-4 text-center mb-5">Latest Announcements</h1>
-                <hr>
-                <div class="owl-carousel testimonial-carousel">
-                    <?php while ($row = mysqli_fetch_assoc($result)) : ?>
-                    <div class="testimonial-item">
+        <div class="container">
+            <h1 class="display-4 text-center mb-5">Latest Announcements</h1>
+            <hr>
+            <div class="row">
+                <?php while ($row = mysqli_fetch_assoc($result)) : ?>
+                <div class="col-md-4 mb-4">
+                    <div class="announcement-item">
                         <?php if (!empty($row['image'])) : ?>
-                        <img class="position-relative  bg-white shadow mx-auto"
+                        <img class="position-relative bg-white shadow mx-auto"
                             src="data:image/jpeg;base64,<?php echo base64_encode($row['image']); ?>"
-                            style="width: 300px; height: 200px; padding: 12px; margin-bottom: -50px; z-index: 1;"
+                            style="width: 100%; height: 200px; object-fit: cover; margin-bottom: 20px;"
                             alt="<?php echo htmlspecialchars($row['title']); ?>">
                         <?php else : ?>
                         <img class="position-relative border-8 bg-white shadow mx-auto" src="img/default.png"
-                            style="width: 300px; height: 200px; padding: 12px; margin-bottom: -50px; z-index: 1;"
+                            style="width: 100%; height: 200px; object-fit: cover; margin-bottom: 20px;"
                             alt="Default Image">
                         <?php endif; ?>
                         <div class="bg-light text-center p-4 pt-0">
@@ -593,11 +601,18 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                             <p class="text-muted font-italic"><?php echo $row['formatted_date']; ?></p>
                         </div>
                     </div>
-                    <?php endwhile; ?>
                 </div>
+                <?php endwhile; ?>
             </div>
         </div>
     </section>
+
+    <?php
+// Close the database connection
+mysqli_close($conn);
+?>
+
+
     <!-- Footer Start -->
     <div class="container-fluid bg-primary text-white mt-5 pt-5 px-sm-3 px-md-5" id="aboutus">
         <div class="row pt-5">
@@ -705,6 +720,11 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
 
     });
     </script>
+    <!-- Bootstrap JS from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/owl.carousel@2.3.4/dist/owl.carousel.min.js"></script>
+
 
 </body>
 
