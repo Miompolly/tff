@@ -16,6 +16,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
+    <link href="css/style.css" rel="stylesheet">
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
@@ -27,11 +28,12 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS from CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    <!-- Libraries Stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/owl.carousel@2.3.4/dist/assets/owl.carousel.min.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -44,7 +46,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     <section id="home">
         <div class="container-fluid position-relative nav-bar p-0">
             <div class="container-lg position-relative p-0 px-lg-3" style="z-index: 9;">
-                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 pl-3 pl-lg-5">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
                     <a href="index.php" class="navbar-brand">
                         <img src="img/Logo Png.png" alt="Logo" class="img-fluid" style="height: 60px; width: auto;">
                     </a>
@@ -60,16 +62,15 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                             <a href="#about-us" class="nav-item nav-link">About Us</a>
                             <a href="#contact-us" class="nav-item nav-link">Contact Us</a>
                             <a href="#announcement" class="nav-item nav-link">Announcement</a>
+                        </div>
 
+                        <!-- Authentication Buttons -->
+                        <div class="d-flex align-items-center">
                             <?php if (isset($_SESSION['email'])) : ?>
-
-                            <a href="logout.php" class="nav-item nav-link btn btn-danger text-white ml-2">Logout</a>
+                            <a href="logout.php" class="btn btn-danger mx-2">Logout</a>
                             <?php else : ?>
-                            <!-- Show Login and Signup Buttons if Not Logged In -->
-                            <button class="btn btn-primary ml-2" data-toggle="modal"
-                                data-target="#loginModal">Login</button>
-                            <button class="btn btn-secondary ml-2" data-toggle="modal"
-                                data-target="#signupModal">Signup</button>
+                            <a href="login.php" class="btn btn-outline-primary mx-2">Login</a>
+                            <a href="signup.php" class="btn btn-primary mx-2">Signup</a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -77,133 +78,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
             </div>
         </div>
     </section>
+
     <!-- Navbar End -->
-
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="login_action.php" method="POST">
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" class="form-control" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Signup Modal -->
-    <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="signupModalLabel">Signup</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="signup_action.php" method="POST">
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" class="form-control" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-success">Signup</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Navbar End -->
-
-
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="login_action.php" method="POST">
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Login</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <p>Don't have an account? <a href="#" data-toggle="modal" data-target="#signupModal"
-                            data-dismiss="modal">Sign Up</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Signup Modal -->
-    <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="signupModalLabel">Sign Up</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="signup_action.php" method="POST">
-                        <div class="form-group">
-                            <label for="username">Full Name</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <p>Already have an account? <a href="#" data-toggle="modal" data-target="#loginModal"
-                            data-dismiss="modal">Login</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
 
@@ -487,16 +363,12 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     </section>
     <!-- Services End -->
 
-    <!-- Services End -->
-
-    <!-- Donation Section Start -->
-    <!-- Donation Section Start -->
     <section id="donate" class="container-fluid py-5">
         <div class="container">
             <h1 class="display-4 text-center mb-5">Donate</h1>
             <hr>
             <div class="row">
-                <!-- Donation for Students Section -->
+                <!-- Donation for Students -->
                 <div class="col-md-6 col-lg-3 mb-4">
                     <div class="donation-card p-4 border rounded shadow h-100">
                         <h3 class="mb-4">Support Students</h3>
@@ -508,13 +380,12 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                             <li>Support low-income students</li>
                         </ul>
                         <div class="text-center mt-4">
-                            <button class="btn btn-primary btn-lg donate-btn" data-bs-toggle="modal"
-                                data-bs-target="#donationModal" data-type="Students">Donate</button>
+                            <a href="donate1.php?type=Students" class="btn btn-primary btn-lg">Donate</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Donation for Pastors Section -->
+                <!-- Donation for Pastors -->
                 <div class="col-md-6 col-lg-3 mb-4">
                     <div class="donation-card p-4 border rounded shadow h-100">
                         <h3 class="mb-4">Retired Pastors</h3>
@@ -526,8 +397,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                             <li>Peace of mind</li>
                         </ul>
                         <div class="text-center mt-4">
-                            <button class="btn btn-success btn-lg donate-btn" data-bs-toggle="modal"
-                                data-bs-target="#donationModal" data-type="Pastors">Donate</button>
+                            <a href="donate1.php?type=Pastors" class="btn btn-success btn-lg">Donate</a>
                         </div>
                     </div>
                 </div>
@@ -544,8 +414,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                             <li>Care packages</li>
                         </ul>
                         <div class="text-center mt-4">
-                            <button class="btn btn-info btn-lg donate-btn" data-bs-toggle="modal"
-                                data-bs-target="#donationModal" data-type="HospitalVisit">Donate</button>
+                            <a href="donate1.php?type=HospitalVisit" class="btn btn-info btn-lg">Donate</a>
                         </div>
                     </div>
                 </div>
@@ -562,8 +431,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                             <li>Basic healthcare</li>
                         </ul>
                         <div class="text-center mt-4">
-                            <button class="btn btn-warning btn-lg donate-btn" data-bs-toggle="modal"
-                                data-bs-target="#donationModal" data-type="Insurance">Donate</button>
+                            <a href="donate1.php?type=Insurance" class="btn btn-warning btn-lg">Donate</a>
                         </div>
                     </div>
                 </div>
@@ -571,45 +439,6 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
         </div>
     </section>
 
-    <!-- Update the donation modal options -->
-    <div class="modal fade" id="donationModal" tabindex="-1" aria-labelledby="donationModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="donationModalLabel">Make a Donation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="donationForm" action="register_donation.php" method="POST">
-                        <div class="mb-3">
-                            <label for="donationType" class="form-label">Donating For</label>
-                            <select class="form-control" id="donationType" name="donationType" required>
-                                <option value="" selected disabled>Select Donation Type</option>
-                                <option value="Students">Students Support</option>
-                                <option value="Pastors">Pastors' Pension</option>
-                                <option value="HospitalVisit">Hospital Visit Support</option>
-                                <option value="Insurance">Medical Insurance</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="whatsapp" class="form-label">WhatsApp Number</label>
-                            <input type="tel" class="form-control" id="whatsapp" name="whatsapp" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="donationDetails" class="form-label">What would you like to donate?</label>
-                            <textarea class="form-control" id="donationDetails" name="donationDetails" rows="3"
-                                required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Submit Donation</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Donation Section End -->
 

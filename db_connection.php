@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "Yawhey@123";
+$password = "";
 $database = "tff";
 
 // Enable error reporting for debugging
@@ -21,3 +21,4 @@ $conn->set_charset("utf8mb4");
 
 // Don't close the connection here, because you want to use it later
 ?>
+// this the connectionsof db
