@@ -561,12 +561,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     </div>
 
     <?php
-$conn = new mysqli('localhost', 'root', '', 'tff');
+ require_once 'db_connection.php';
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 $query = "SELECT id, title, content, image, DATE_FORMAT(date, '%M %d, %Y') as formatted_date 
 FROM announcements 
