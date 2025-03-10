@@ -367,8 +367,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
             <h1 class="display-4 text-center mb-5">Donate</h1>
             <hr>
             <div class="row">
-                <!-- Donation for Students -->
-                <div class="col-md-6 col-lg-3 mb-4">
+                <div class="col-sm-12 col-md-6 mb-4">
+                    <!-- Donation for Students -->
                     <div class="donation-card p-4 border rounded shadow h-100">
                         <h3 class="mb-4">Support Students</h3>
                         <p>Your donations provide students with essential education tools and materials.</p>
@@ -384,8 +384,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                     </div>
                 </div>
 
-                <!-- Donation for Pastors -->
-                <div class="col-md-6 col-lg-3 mb-4">
+                <div class="col-sm-12 col-md-6 mb-4">
+                    <!-- Donation for Pastors -->
                     <div class="donation-card p-4 border rounded shadow h-100">
                         <h3 class="mb-4">Retired Pastors</h3>
                         <p>Help ensure pastors can live with dignity in their later years.</p>
@@ -400,9 +400,11 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Hospital Visitation Support -->
-                <div class="col-md-6 col-lg-3 mb-4">
+            <div class="row">
+                <div class="col-sm-12 col-md-6 mb-4">
+                    <!-- Hospital Visitation Support -->
                     <div class="donation-card p-4 border rounded shadow h-100">
                         <h3 class="mb-4">Hospital Visit Support</h3>
                         <p>Help provide comfort to those in hospital.</p>
@@ -418,8 +420,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
                     </div>
                 </div>
 
-                <!-- Medical Insurance Support -->
-                <div class="col-md-6 col-lg-3 mb-4">
+                <div class="col-sm-12 col-md-6 mb-4">
+                    <!-- Medical Insurance Support -->
                     <div class="donation-card p-4 border rounded shadow h-100">
                         <h3 class="mb-4">Medical Insurance</h3>
                         <p>Help provide healthcare coverage for those in need.</p>

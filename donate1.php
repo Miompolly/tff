@@ -1,63 +1,74 @@
-<?php
-session_start();
-require 'db_connect.php'; // Include database connection
-
-$donationType = isset($_GET['type']) ? $_GET['type'] : '';
-
-if (!$donationType) {
-    header("Location: index.php");
-    exit();
-}
-
-$donationDetails = [
-    "Students" => [
-        "title" => "Support Students",
-        "description" => "Your donation helps provide essential education tools and materials for students in need."
-    ],
-    "Pastors" => [
-        "title" => "Support Retired Pastors",
-        "description" => "Help retired pastors live with dignity by contributing to their pension and daily needs."
-    ],
-    "HospitalVisit" => [
-        "title" => "Hospital Visit Support",
-        "description" => "Your help provides nutritious meals, basic necessities, and comfort for hospital patients."
-    ],
-    "Insurance" => [
-        "title" => "Medical Insurance Support",
-        "description" => "Your donation helps cover annual insurance fees, emergency expenses, and basic healthcare."
-    ]
-];
-
-if (!array_key_exists($donationType, $donationDetails)) {
-    header("Location: index.php");
-    exit();
-}
-
-$title = $donationDetails[$donationType]['title'];
-$description = $donationDetails[$donationType]['description'];
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donate - <?php echo $title; ?></title>
+    <title>Donate - Support a Cause</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+    /* Flexbox to make both sections equal height */
+    .row {
+        display: flex;
+    }
+
+    .col-md-6 {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .form-section,
+    .description-section {
+        flex: 1;
+    }
+
+    .description-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .form-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    </style>
 </head>
 
 <body>
-
     <div class="container mt-5">
-        <h2 class="text-center"><?php echo $title; ?></h2>
-        <p class="text-center"><?php echo $description; ?></p>
-        <hr>
+        <!-- Title Section -->
+        <div class="text-center mb-5">
+            <h2>Support a Cause</h2>
+            <p>Your donation helps support various causes that make a difference in the community.</p>
+            <hr>
+        </div>
 
-        <div class="row justify-content-center">
-            <div class="col-md-6">
+        <!-- Row with two Divs: One for the Form, the other for Description and Image -->
+        <div class="row">
+            <!-- Description Section with Image -->
+            <div class="col-md-6 description-section mb-4">
+                <h4>Make a Difference Today</h4>
+                <p>Your contribution to any of these causes will have a lasting impact. Please fill out the form below
+                    to make your donation.</p>
+                <img src="img/Screenshot from 2025-03-10 17-08-30.png" alt="Support a Cause" class="img-fluid">
+            </div>
+
+            <!-- Donation Form Section -->
+            <div class="col-md-6 form-section">
                 <form action="process_donation.php" method="POST">
-                    <input type="hidden" name="donationType" value="<?php echo htmlspecialchars($donationType); ?>">
+                    <div class="mb-3">
+                        <label for="donationTypeSelect" class="form-label">Select Donation Type</label>
+                        <select class="form-select" id="donationTypeSelect" name="donationType" required>
+                            <option value="Students" selected>Support Students</option>
+                            <option value="Pastors">Support Retired Pastors</option>
+                            <option value="HospitalVisit">Hospital Visit Support</option>
+                            <option value="Insurance">Medical Insurance Support</option>
+                        </select>
+                    </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address</label>
@@ -84,7 +95,6 @@ $description = $donationDetails[$donationType]['description'];
             <a href="index.php" class="btn btn-secondary">Back to Home</a>
         </div>
     </div>
-
 </body>
 
 </html>
