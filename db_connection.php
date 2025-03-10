@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "Yawhey@123";
 $database = "tff";
 
 // Enable error reporting for debugging
